@@ -5,44 +5,58 @@ import {
     updateUser,
     getAutoSuggestUsers
 } from '../service/user.service.js';
+import { asyncHandler } from '../../../middleware/async-handler.midleware.js';
+import { userIdSchema, userAutoSuggestionSchema, userSchema } from '../schema/user.schema.js';
 
-export async function createUserController(req, res) {
+export const createUserController = asyncHandler('Create - User - Controller', userSchema, async (req) => {
     const body = req.body;
     const user = await createUser(body);
 
-    if (user.name === 'Error') {
-        res.status(400).send(user.message);
-    } else {
-        res.send(user);
-    }
-}
+    return {
+        json: user,
+        status: 200
+    };
+});
 
-export async function getUserController(req, res) {
+export const getUserController = asyncHandler('Get - User - Controller', userIdSchema, async (req) => {
     const userId = req.params.id;
     const user = await getUser(userId);
 
-    res.send(user);
-}
+    return {
+        json: user,
+        status: 200
+    };
+});
 
-export async function updateUserController(req, res) {
+export const updateUserController = asyncHandler('Update - User - Controller', userIdSchema, async (req) => {
     const userId = req.params.id;
     const body = req.body;
     const user = await updateUser(userId, body);
 
-    res.send(user);
-}
+    return {
+        json: user,
+        status: 200
+    };
+});
 
-export async function deleteUserController(req, res) {
+export const deleteUserController = asyncHandler('Delete - User - Controller', userIdSchema, async (req) => {
     const userId = req.params.id;
     const user = await deleteUser(userId);
 
-    res.send(user);
-}
+    return {
+        json: user,
+        status: 200
+    };
+});
 
-export async function getAutoSuggestUsersController(req, res) {
+export const getAutoSuggestUsersController = asyncHandler('Get Auto Suggest - User - Controller', userAutoSuggestionSchema, async (req) => {
     const login = req.query.login || 'admin';
     const limit = Number(req.query.limit) || 5;
 
     const users = await getAutoSuggestUsers(login, limit);
-    res.send(users);
-}
+
+    return {
+        json: users,
+        status: 200
+    };
+});

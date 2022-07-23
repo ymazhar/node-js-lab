@@ -7,20 +7,18 @@ import {
     deleteGroupController,
     addUserGroupController
 } from './controllers/group.controller.js';
-import { validationSchema } from '../../middleware/validateRequest.js';
-import { groupAddUserSchema, groupIdSchema, groupSchema } from './schema/group.schema.js';
 const groupRouter = Router();
 
-groupRouter.post('/', validationSchema(groupSchema, 'body'), createGroupController);
+groupRouter.post('/', createGroupController);
 
-groupRouter.put('/:id', validationSchema(groupIdSchema, 'params'), updateGroupController);
+groupRouter.put('/:id', updateGroupController);
 
-groupRouter.get('/:id', validationSchema(groupIdSchema, 'params'), getGroupController);
+groupRouter.get('/:id', getGroupController);
 
 groupRouter.get('/', getAllGroupsController);
 
-groupRouter.delete('/:id', validationSchema(groupIdSchema, 'params'), deleteGroupController);
+groupRouter.delete('/:id', deleteGroupController);
 
-groupRouter.post('/adduser', validationSchema(groupAddUserSchema, 'body'), addUserGroupController);
+groupRouter.post('/adduser', addUserGroupController);
 
 export default groupRouter;

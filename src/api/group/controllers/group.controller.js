@@ -6,50 +6,66 @@ import {
     deleteGroup, addUsersToGroup
 } from '../service/group.service.js';
 import db from '../../../data-access/db.js';
+import { asyncHandler } from '../../../middleware/async-handler.midleware.js';
+import { groupSchema, groupAddUserSchema, groupIdSchema } from '../schema/group.schema.js';
 
-export async function createGroupController(req, res) {
+export const createGroupController = asyncHandler('Create - Group - Controller', groupSchema, async (req) => {
     const body = req.body;
     const group = await createGroup(body);
 
-    if (group.name === 'Error') {
-        res.status(400).send(group.message);
-    } else {
-        res.send(group);
-    }
-}
+    return {
+        json: group,
+        status: 200
+    };
+});
 
-export async function updateGroupController(req, res) {
+export const updateGroupController = asyncHandler('Update - Group - Controller', groupIdSchema, async (req) => {
     const groupId = req.params.id;
     const body = req.body;
     const group = await updateGroup(groupId, body);
 
-    res.send(group);
-}
+    return {
+        json: group,
+        status: 200
+    };
+});
 
-export async function getGroupController(req, res) {
+export const getGroupController = asyncHandler('Get - Group - Controller', groupIdSchema, async (req) => {
     const groupId = req.params.id;
     const group = await getGroup(groupId);
 
-    res.send(group);
-}
+    return {
+        json: group,
+        status: 200
+    };
+});
 
-export async function getAllGroupsController(req, res) {
+export const getAllGroupsController = asyncHandler('Get All - Group - Controller', {}, async () => {
     const groups = await getAllGroups();
 
-    res.send(groups);
-}
+    return {
+        json: groups,
+        status: 200
+    };
+});
 
-export async function deleteGroupController(req, res) {
+export const deleteGroupController = asyncHandler('Delete - Group - Controller', groupIdSchema, async (req) => {
     const groupId = req.params.id;
     const group = await deleteGroup(groupId);
 
-    res.send(group);
-}
+    return {
+        json: group,
+        status: 200
+    };
+});
 
-export async function addUserGroupController(req, res) {
+export const addUserGroupController = asyncHandler('Add User Group - Group - Controller', groupAddUserSchema, async (req) => {
     const transaction = await db.transaction();
     const { user_id, group_id } = req.body;
     const userGroup = await addUsersToGroup({ user_id, group_id }, transaction);
 
-    res.send(userGroup);
-}
+    return {
+        json: userGroup,
+        status: 200
+    };
+});
